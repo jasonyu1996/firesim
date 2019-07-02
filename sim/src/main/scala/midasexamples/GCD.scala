@@ -5,7 +5,9 @@ package firesim.midasexamples
 import chisel3._
 import chisel3.util.unless
 
-class GCD extends Module {
+import midas.widgets.PeekPokeEndpoint
+
+class GCDTarget extends Module {
   val io = IO(new Bundle {
     val a  = Input(UInt(16.W))
     val b  = Input(UInt(16.W))
@@ -25,3 +27,9 @@ class GCD extends Module {
   printf("X: %d, Y:%d\n", x, y)
 }
 
+class GCD extends Module {
+  val io = IO(new Bundle {} )
+  val gcd = Module(new GCDTarget)
+  val peekPokeEndpoint = Module(new midas.widgets.PeekPokeEndpoint(Flipped(gcd.io.cloneType)))
+  peekPokeEndpoint.io <> gcd.io
+}
